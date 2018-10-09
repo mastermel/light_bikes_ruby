@@ -7,6 +7,7 @@ options = BotOptions.new
 options.parse!
 
 run(
-  name: options.name,
-  game_id: options.game_id
+  name: options.name || `whoami`.strip,
+  game_id: options.game_id,
+  test_game: options.test_game,
 )

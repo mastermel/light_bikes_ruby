@@ -2,10 +2,11 @@ require 'pry'
 require_relative './light_bikes_client'
 
 # Do it!
-def run(game_id: nil, name: 'Flynn', log_prefix: nil)
+def run(game_id: nil, test_game: false, name: 'Flynn', log_prefix: nil)
   client = LightBikesClient.new(
     name: name,
     game_id: game_id,
+    test_game: test_game,
     log_prefix: log_prefix,
   )
 

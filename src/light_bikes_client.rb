@@ -2,6 +2,7 @@
 
 require 'pry'
 require 'httparty'
+require 'colorize'
 
 # Class encapsulating all API calls to the light_bikes server.
 class LightBikesClient
@@ -9,11 +10,18 @@ class LightBikesClient
 
   base_uri 'localhost:8080'
 
-  attr_reader :game_id, :name, :player, :board, :winner, :log_prefix
+  attr_reader :game_id, 
+    :name,
+    :player,
+    :board,
+    :winner,
+    :log_prefix,
+    :test_game
 
-  def initialize(game_id: nil, name: 'Flynn', log_prefix: nil)
+  def initialize(game_id: nil, test_game: false, name: 'Flynn', log_prefix: nil)
     @name = name
     @game_id = game_id
+    @test_game = test_game
     @log_prefix = log_prefix
   end
 
@@ -39,9 +47,10 @@ class LightBikesClient
   end
 
   def create_new_game
-    log 'Creating new game...'
+    log test_game ? 'Creating new game against test bot...' : 'Creating new game...'
 
-    response = post('/games')
+    params = test_game ? { test: true } : {}
+    response = post('/games', params)
     @game_id = response['id']
 
     log "New Game ID: #{game_id}"
