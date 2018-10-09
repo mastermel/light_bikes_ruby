@@ -1,11 +1,12 @@
+require 'pry'
+
 require_relative './options'
-require_relative './light_bikes_client'
+require_relative './bot_logic'
 
 options = BotOptions.new
 options.parse!
 
-client = LightBikesClient.new(options.game_id)
-
-if client.join_game
-  
-end
+run(
+  name: options.name,
+  game_id: options.game_id
+)
