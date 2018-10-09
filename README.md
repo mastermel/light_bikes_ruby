@@ -6,6 +6,7 @@ is inside *./src/light_bikes_client.rb*.
 
 # Start
 `bundle install`
+
 `ruby ./src/bot.rb -t`
 
 ## Set your name
