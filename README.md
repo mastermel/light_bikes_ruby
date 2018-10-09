@@ -4,7 +4,8 @@ A bot for [davishyer/light_bikes](https://github.com/davishyer/light_bikes) writ
 The actual AI for the bot is contained inside *./src/bot_logic.rb*. All interaction with the server
 is inside *./src/light_bikes_client.rb*.
 
-# Run against the light_bikes test bot
+# Start
+`bundle install`
 `ruby ./src/bot.rb -t`
 
 ## Set your name
