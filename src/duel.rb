@@ -1,22 +1,34 @@
 require 'pry'
 require 'colorize'
 
+require_relative './options'
 require_relative './bot_logic'
 require_relative './light_bikes_client'
 
+options = BotOptions.new
+options.parse!
+
 client = LightBikesClient.new
-client.create_new_game
+client.create_new_game(options.player_count)
 
-p_one = Process.fork do
-  puts "Starting first bot..."
-  run(game_id: client.game_id, name: 'Flynn', log_prefix: 'Bot 1')
-  puts "Exited first bot"
-end
+count = options.player_count || 2
 
-p_two = Process.fork do
-  puts "Starting second bot..."
-  run(game_id: client.game_id, name: 'Clu', log_prefix: 'Bot 2')
-  puts "Exited second bot"
+names = %w[
+  Flynn
+  Clu
+  Tron
+  Quorra
+]
+
+i = 1
+while i <= count do
+  Process.fork do
+    puts "Starting bot #{i}..."
+    run(game_id: client.game_id, name: names[i-1], log_prefix: "Bot #{i}")
+    puts "Exited bot #{i}"
+  end
+
+  i += 1
 end
 
 Process.waitall

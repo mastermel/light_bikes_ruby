@@ -46,10 +46,12 @@ class LightBikesClient
     true
   end
 
-  def create_new_game
+  def create_new_game(playerCount = nil)
     log test_game ? 'Creating new game against test bot...' : 'Creating new game...'
 
-    params = test_game ? { test: true } : {}
+    params = {}
+    params[:test] = test_game
+    params[:numPlayers] = playerCount unless playerCount.nil?
     response = post('/games', params)
     @game_id = response['id']
 
