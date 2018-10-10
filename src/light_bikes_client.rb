@@ -8,8 +8,6 @@ require 'colorize'
 class LightBikesClient
   include HTTParty
 
-  base_uri 'localhost:8080'
-
   attr_reader :game_id, 
     :name,
     :player,
@@ -19,7 +17,9 @@ class LightBikesClient
     :log_prefix,
     :test_game
 
-  def initialize(game_id: nil, player_count: nil, test_game: false, name: 'Flynn', log_prefix: nil)
+  def initialize(server_uri: 'localhost:8080', game_id: nil, player_count: nil, test_game: false, name: 'Flynn', log_prefix: nil)
+    self.class.base_uri(server_uri)
+
     @name = name
     @game_id = game_id
     @test_game = test_game

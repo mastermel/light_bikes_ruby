@@ -7,7 +7,7 @@ is inside *./src/light_bikes_client.rb*.
 # Start
 `bundle install`
 
-`ruby ./src/bot.rb -t`
+`ruby ./src/bot.rb -t -s lightbikes.server.com`
 
 ## Set your name
 `ruby ./src/bot.rb -n Tron`

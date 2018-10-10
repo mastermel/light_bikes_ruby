@@ -4,7 +4,7 @@ require 'optparse'
 
 # Class for parsing and containing command line options passed to the bot
 class BotOptions
-  attr_reader :game_id, :name, :test_game, :player_count
+  attr_reader :game_id, :name, :test_game, :player_count, :server_uri
 
   def parse!
     OptionParser.new do |opts|
@@ -13,6 +13,10 @@ class BotOptions
       opts.on('--help', 'Prints this help') do
         puts opts
         exit
+      end
+
+      opts.on('-sSERVER', '--server-url=SERVER', 'The base URI for the server to connect to (defaults to localhost:8080).') do |v|
+        @server_uri = v || 'localhost:8080'
       end
 
       opts.on('-gGAMEID', '--game-id=GAMEID', 'Game ID to connect to. Will create new game if absent.') do |v|

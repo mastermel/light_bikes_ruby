@@ -2,13 +2,14 @@ require 'pry'
 require_relative './light_bikes_client'
 
 # Do it!
-def run(game_id: nil, player_count: nil, test_game: false, name: 'Flynn', log_prefix: nil)
+def run(server_uri: 'localhost:8080', game_id: nil, player_count: nil, test_game: false, name: 'Flynn', log_prefix: nil)
   client = LightBikesClient.new(
     name: name,
     game_id: game_id,
     test_game: test_game,
     log_prefix: log_prefix,
     player_count: player_count,
+    server_uri: server_uri,
   )
 
   if client.join_game
