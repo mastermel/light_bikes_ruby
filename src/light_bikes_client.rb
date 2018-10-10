@@ -36,7 +36,7 @@ class LightBikesClient
 
     unless response.success? && response.any?
       log 'Failed to join game!'
-      log response
+      log response.to_s
       return false
     end
 
@@ -53,6 +53,13 @@ class LightBikesClient
     params[:test] = test_game
     params[:numPlayers] = playerCount unless playerCount.nil?
     response = post('/games', params)
+
+    unless response.success?
+      log 'Failed to create game!'
+      log response.to_s
+      return false
+    end
+
     @game_id = response['id']
 
     log "New Game ID: #{game_id}"
@@ -69,7 +76,7 @@ class LightBikesClient
 
     unless response.success? && response.any?
       log 'Failed to make a move!'
-      log response
+      log response.to_s
       return false
     end
 
