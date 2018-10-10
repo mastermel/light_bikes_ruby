@@ -9,5 +9,6 @@ options.parse!
 run(
   name: options.name || `whoami`.strip,
   game_id: options.game_id,
+  player_count: options.player_count,
   test_game: options.test_game,
 )

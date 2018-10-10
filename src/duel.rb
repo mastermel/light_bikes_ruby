@@ -8,16 +8,16 @@ require_relative './light_bikes_client'
 options = BotOptions.new
 options.parse!
 
-client = LightBikesClient.new
-client.create_new_game(options.player_count)
+client = LightBikesClient.new(player_count: options.player_count)
+client.create_new_game
 
 count = options.player_count || 2
 
-names = %w[
-  Flynn
-  Clu
-  Tron
-  Quorra
+names = [
+  "FlynnFlynn Flynn",
+  "CluCluClu Clu",
+  "TronTron Tron Tron Tron",
+  "Quorra I am a really long name fora  bot",
 ]
 
 i = 1

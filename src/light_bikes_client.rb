@@ -13,16 +13,18 @@ class LightBikesClient
   attr_reader :game_id, 
     :name,
     :player,
+    :player_count,
     :board,
     :winner,
     :log_prefix,
     :test_game
 
-  def initialize(game_id: nil, test_game: false, name: 'Flynn', log_prefix: nil)
+  def initialize(game_id: nil, player_count: nil, test_game: false, name: 'Flynn', log_prefix: nil)
     @name = name
     @game_id = game_id
     @test_game = test_game
     @log_prefix = log_prefix
+    @player_count = player_count
   end
 
   def join_game
@@ -46,12 +48,12 @@ class LightBikesClient
     true
   end
 
-  def create_new_game(playerCount = nil)
+  def create_new_game
     log test_game ? 'Creating new game against test bot...' : 'Creating new game...'
 
     params = {}
     params[:test] = test_game
-    params[:numPlayers] = playerCount unless playerCount.nil?
+    params[:numPlayers] = player_count unless player_count.nil?
     response = post('/games', params)
 
     unless response.success?
