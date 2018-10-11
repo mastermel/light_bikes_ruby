@@ -52,7 +52,7 @@ class LightBikesClient
     log test_game ? 'Creating new game against test bot...' : 'Creating new game...'
 
     params = {}
-    params[:test] = test_game
+    params[:addServerBot] = test_game
     params[:numPlayers] = player_count unless player_count.nil?
     response = post('/games', params)
 
@@ -71,7 +71,7 @@ class LightBikesClient
     log "Moving to #{x}-#{y}"
 
     response = post("/games/#{game_id}/move", {
-      id: player['id'],
+      playerId: player['id'],
       x: x,
       y: y
     })
