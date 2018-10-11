@@ -37,6 +37,10 @@ class BotLogic
     client.all_points
   end
 
+  def open_areas
+    client.open_areas
+  end
+
   def run!
     if client.join_game
       on_join
@@ -63,22 +67,30 @@ class BotLogic
     move = available_moves.sample
 
     # If we haven't found someting yet I guess we're dead! Take the first move
-    move || available_moves(true).first
+    move || available_moves(all: true).first
   end
 
   # Determines if moving to the given coordinate would keep us alive
-  def is_legit_move?(point)
-    return client.all_points[point].nil?
+  def is_legit_move?(move)
+    return all_points[move].nil?
   end
 
   # Find all possible moves that would keep us alive
-  def available_moves(include_all = false)
-    player = client.player
+  def available_moves(position = player.position, all: false)
     [
-      Point.new(player.x - 1, player.y),
-      Point.new(player.x + 1, player.y),
-      Point.new(player.x, player.y - 1),
-      Point.new(player.x, player.y + 1),
-    ].select { |point| include_all || is_legit_move?(point) }
+      Point.new(position.x - 1, position.y),
+      Point.new(position.x, position.y - 1),
+      Point.new(position.x + 1, position.y),
+      Point.new(position.x, position.y + 1),
+    ].select { |point| all || is_legit_move?(point) }
+  end
+
+  def safe_moves(all: false)
+    available_moves(all: all).reject {|m| !all && causes_death?(m) }
+  end
+
+  # Determines if we're guaranteed to die in the given position
+  def causes_death?(move)
+    available_moves(move).empty?
   end
 end
