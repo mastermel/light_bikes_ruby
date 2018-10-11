@@ -22,7 +22,7 @@ i = 1
 while i <= count do
   Process.fork do
     puts "Starting bot #{i}..."
-    bot = BotLogic.new(
+    bot = RaiderLogic.new(
       server_uri: options.server_uri,
       game_id: client.game_id,
       name: names[i-1],

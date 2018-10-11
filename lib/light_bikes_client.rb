@@ -41,6 +41,7 @@ class LightBikesClient
 
     @opponents = {}
     @all_points = Hash.new(:wall) 
+    @open_areas = []
   end
 
   def join_game
