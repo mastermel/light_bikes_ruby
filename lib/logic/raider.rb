@@ -23,7 +23,8 @@ class RaiderLogic < BotLogic
     if objective == :hunt
       move = move_to_oponnent
       unless move
-        @objective = :kill
+        # @objective = :kill
+				@objective = :survive
         client.log('Killing...')
       end
     end
