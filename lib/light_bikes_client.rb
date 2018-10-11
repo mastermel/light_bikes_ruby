@@ -15,9 +15,11 @@ class LightBikesClient
     :board,
     :winner,
     :log_prefix,
-    :test_game
+    :test_game,
+    :all_points,
+    :opponents
 
-  def initialize(server_uri: 'localhost:8080', game_id: nil, player_count: nil, test_game: false, name: 'Flynn', log_prefix: nil)
+  def initialize(server_uri:, game_id: nil, player_count: nil, test_game: false, name: 'Flynn', log_prefix: nil)
     self.class.base_uri(server_uri)
 
     @name = name
@@ -25,6 +27,9 @@ class LightBikesClient
     @test_game = test_game
     @log_prefix = log_prefix
     @player_count = player_count
+
+    @opponents = {}
+    @all_points = Hash.new(:wall) 
   end
 
   def join_game
@@ -44,7 +49,7 @@ class LightBikesClient
 
     parse_game_state(response)
 
-    log "Ready #{player['color'].capitalize} Player #{player['id']}"
+    log "Ready #{player.color.capitalize} Player #{player.id}"
     true
   end
 
@@ -71,7 +76,7 @@ class LightBikesClient
     log "Moving to #{x}-#{y}"
 
     response = post("/games/#{game_id}/move", {
-      playerId: player['id'],
+      playerId: player.id,
       x: x,
       y: y
     })
@@ -87,21 +92,51 @@ class LightBikesClient
   end
 
   def has_won?
-    winner == player['color']
+    winner == player.color
   end
 
   def log(message)
     message = "#{log_prefix}: #{message}" if log_prefix
-    message = message.send(player['color']) if player && player['color']
+    message = message.send(player.color) if player && player.color
     puts message
   end
 
   private
 
   def parse_current_player(response)
-    return if player && player['id'] != response['current_player']['id']
+    return if player && player.id != response['current_player']['id']
 
-    @player = response['current_player']
+    @player = Player.new(response['current_player'])
+  end
+
+  def parse_all_points(response)
+    board = response['board']
+
+    # Set the walls unless we've already done that
+    unless all_points.any?
+      i = 0
+      while i < board.length do
+        all_points[Point.new(-1, i)] = :wall
+        all_points[Point.new(i, -1)] = :wall
+        all_points[Point.new(board.length, i)] = :wall
+        all_points[Point.new(i, board.length)] = :wall
+        i += 1
+      end
+    end
+
+    board.each_with_index do |row, x|
+      row.each_with_index do |color, y|
+        all_points[Point.new(x,y)] = color
+      end
+    end
+  end
+
+  def parse_opponents(response)
+    response['players'].each do |p|
+      if p['color'] != player.color
+        opponents[p['color']] = Player.new(p)
+      end
+    end
   end
 
   def parse_game_state(response)
@@ -112,6 +147,8 @@ class LightBikesClient
     @winner = response['winner']
 
     parse_current_player(response)
+    parse_opponents(response)
+    parse_all_points(response)
   end
 
   def get(*args)

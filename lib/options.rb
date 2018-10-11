@@ -6,6 +6,11 @@ require 'optparse'
 class BotOptions
   attr_reader :game_id, :name, :test_game, :player_count, :server_uri
 
+  def initialize
+    @name = `whoami`.strip
+    @server_uri = 'light-bikes.inseng.net'
+  end
+
   def parse!
     OptionParser.new do |opts|
       opts.banner = 'Usage: bot.rb [options]'
@@ -16,7 +21,7 @@ class BotOptions
       end
 
       opts.on('-sSERVER', '--server-url=SERVER', 'The base URI for the server to connect to (defaults to localhost:8080).') do |v|
-        @server_uri = v || 'localhost:8080'
+        @server_uri = v
       end
 
       opts.on('-gGAMEID', '--game-id=GAMEID', 'Game ID to connect to. Will create new game if absent.') do |v|
@@ -32,7 +37,7 @@ class BotOptions
       end
 
       opts.on('-nNAME', '--name=NAME', 'The name your bot will be assuming.') do |v|
-        @game_id = v
+        @name = v
       end
     end.parse!
   end

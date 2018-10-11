@@ -7,17 +7,17 @@ is inside *./src/light_bikes_client.rb*.
 # Start
 `bundle install`
 
-`ruby ./src/bot.rb -t -s lightbikes.server.com`
+`ruby ./bot.rb -t -s lightbikes.server.com`
 
 ## Set your name
-`ruby ./src/bot.rb -n Tron`
+`ruby ./bot.rb -n Tron`
 
 ## Join a predefined game
-`ruby ./src/bot.rb -g <gameID>`
+`ruby ./bot.rb -g <gameID>`
 
 ## Run the bot logic against itself
-`ruby ./src/duel.rb`
+`ruby ./duel.rb`
 
 # Help
-`ruby ./src/bot.rb -h`
+`ruby ./bot.rb -h`
 

@@ -1,9 +1,4 @@
-require 'pry'
-require 'colorize'
-
-require_relative './options'
-require_relative './bot_logic'
-require_relative './light_bikes_client'
+require_relative './lib/lib'
 
 options = BotOptions.new
 options.parse!
