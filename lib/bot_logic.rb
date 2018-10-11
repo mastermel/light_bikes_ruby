@@ -1,5 +1,5 @@
 class BotLogic
-  attr_reader :client
+  attr_reader :client, :debug
 
   def initialize(
     server_uri:,
@@ -10,6 +10,7 @@ class BotLogic
     log_prefix: nil,
     debug: false
   )
+    @debug = debug
     @client = LightBikesClient.new(
       name: name,
       game_id: game_id,
@@ -20,8 +21,26 @@ class BotLogic
     )
   end
 
+  def player
+    client.player
+  end
+
+  def opponent
+    client.opponents.values.first
+  end
+  
+  def board
+    client.board
+  end
+
+  def all_points
+    client.all_points
+  end
+
   def run!
     if client.join_game
+      on_join
+
       loop do
         if client.winner
           client.log(client.has_won? ? 'I won!' : 'I lost :(')
@@ -33,6 +52,10 @@ class BotLogic
         break unless move && client.make_move(move.x, move.y)
       end
     end
+  end
+
+  def on_join
+    # no-op
   end
 
   def find_best_move

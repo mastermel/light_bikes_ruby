@@ -7,6 +7,14 @@ class Point
     @y = y
   end
 
+  def to_s
+    "[#{x},#{y}]"
+  end
+
+  def to_i
+    x + y
+  end
+
   def ==(other)
     if other.is_a?(Point)
       x == other.x && y == other.y
@@ -21,6 +29,24 @@ class Point
 
   def hash
     [ x, y ].hash
+  end
+
+  def distance_to(other)
+    Math.sqrt(
+       ((x - other.x) ** 2) +
+       ((y - other.y) ** 2)
+    )
+  end
+
+  def -(other)
+    Point.new(x - other.x, y - other.y)
+  end
+
+  def dir_from(other)
+    return :down if other.x > x
+    return :up if other.x < x
+    return :left if other.y > y
+    return :right if other.y < y
   end
 end
 
