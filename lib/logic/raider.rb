@@ -1,5 +1,5 @@
 class RaiderLogic < BotLogic
-  attr_reader :objective
+  attr_reader :objective, :last_dir
 
   def initialize(options)
     super(options)
@@ -12,6 +12,8 @@ class RaiderLogic < BotLogic
   end
 
   def find_best_move
+    sleep 0.125
+
     if objective == :get_to_the_center
       move = move_to_the_center
       unless move
@@ -44,18 +46,43 @@ class RaiderLogic < BotLogic
     move ||= available_moves.sample
 
     # If we haven't found someting yet I guess we're dead! Take the first move
-    move || available_moves(true).first
+    move ||= available_moves(true).first
+
+    @last_dir = move.dir_from(player.position)
+    move
   end
 
   def move_to_the_center
+    distance_to_center = player.position.distance_to(center_point)
+
+    available_moves
+      .select {|m| m.distance_to(center_point) < distance_to_center }
+      .sort_by! {|m| (m.dir_from(player.position) == last_dir) ? 1 : 0 }
+      .first
   end
 
   def move_to_oponnent
+    distance_to_opponent = player.position.distance_to(opponent.position)
+
+    available_moves
+      .select { |m|
+        d = m.distance_to(opponent.position)
+        d > 2 && d < distance_to_opponent
+      }
+      .sort_by! {|m| (m.dir_from(player.position) == last_dir) ? 1 : 0 }
+      .first
   end
 
   def cut_off_oponnent
   end
 
   def move_to_survive
+  end
+
+  def center_point
+    return @center_point if @center_point
+
+    half = board.length / 2
+    @center_point = Point.new(half, half)
   end
 end
