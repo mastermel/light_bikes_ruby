@@ -1,5 +1,5 @@
 class BotLogic
-  attr_reader :client
+  attr_reader :client, :debug
 
   def initialize(
     server_uri:,
@@ -10,6 +10,7 @@ class BotLogic
     log_prefix: nil,
     debug: false
   )
+    @debug = debug
     @client = LightBikesClient.new(
       name: name,
       game_id: game_id,
@@ -18,6 +19,22 @@ class BotLogic
       player_count: player_count,
       server_uri: server_uri,
     )
+  end
+
+  def player
+    client.player
+  end
+
+  def opponent
+    client.opponents.values.first
+  end
+  
+  def board
+    client.board
+  end
+
+  def all_points
+    client.all_points
   end
 
   def run!
