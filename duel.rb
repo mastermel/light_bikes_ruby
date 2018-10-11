@@ -26,7 +26,8 @@ while i <= count do
       server_uri: options.server_uri,
       game_id: client.game_id,
       name: names[i-1],
-      log_prefix: "Bot #{i}"
+      log_prefix: "Bot #{i}",
+      debug: i == 1
     )
     puts "Exited bot #{i}"
   end

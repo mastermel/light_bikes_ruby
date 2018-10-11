@@ -1,5 +1,16 @@
 # Do it!
-def run(server_uri: 'localhost:8080', game_id: nil, player_count: nil, test_game: false, name: 'Flynn', log_prefix: nil)
+def run(
+  server_uri:,
+  game_id: nil,
+  player_count: nil,
+  test_game: false,
+  name: 'Flynn',
+  log_prefix: nil,
+  debug: false
+)
+
+  Thread.current[:debug] = debug
+
   client = LightBikesClient.new(
     name: name,
     game_id: game_id,
