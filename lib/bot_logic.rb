@@ -22,6 +22,8 @@ class BotLogic
 
   def run!
     if client.join_game
+      on_join
+
       loop do
         if client.winner
           client.log(client.has_won? ? 'I won!' : 'I lost :(')
@@ -33,6 +35,10 @@ class BotLogic
         break unless move && client.make_move(move.x, move.y)
       end
     end
+  end
+
+  def on_join
+    # no-op
   end
 
   def find_best_move
