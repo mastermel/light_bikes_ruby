@@ -17,7 +17,8 @@ class LightBikesClient
     :log_prefix,
     :test_game,
     :all_points,
-    :opponents
+    :opponents,
+    :open_areas
 
   def initialize(server_uri:, game_id: nil, player_count: nil, test_game: false, name: 'Flynn', log_prefix: nil)
     self.class.base_uri(server_uri)
@@ -134,7 +135,8 @@ class LightBikesClient
   def parse_opponents(response)
     response['players'].each do |p|
       if p['color'] != player.color
-        opponents[p['color']] = Player.new(p)
+        opponents[p['color']] = Player.new(p) unless opponents.key?(p['color'])
+        opponents[p['color']].update_position(p)
       end
     end
   end
@@ -149,6 +151,40 @@ class LightBikesClient
     parse_current_player(response)
     parse_opponents(response)
     parse_all_points(response)
+    @open_areas = get_open_areas
+  end
+
+  def get_open_areas
+    areas = []
+    visited = {}
+
+    0.upto(board.length - 1) do |x|
+      0.upto(board.length - 1) do |y|
+        p = Point.new(x,y)
+        if all_points[p].nil? && !visited[p]
+          areas << deep_search(p, visited)
+        end
+      end
+    end
+
+    areas
+  end
+
+  def deep_search(point, visited)
+    area = [point]
+    visited[point] = true
+
+    rowNbr = [-1, -1, -1, 0, 0, 1, 1, 1]
+    colNbr = [-1, 0, 1, -1, 1, -1, 0, 1]
+
+    0.upto(7) do |k|
+      p = Point.new(point.x + rowNbr[k], point.y + colNbr[k])
+      if all_points[p].nil? && !visited[p]
+        area.push(*deep_search(p, visited))
+      end
+    end
+
+    area
   end
 
   def get(*args)

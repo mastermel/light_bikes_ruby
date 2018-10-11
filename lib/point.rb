@@ -42,6 +42,10 @@ class Point
     Point.new(x - other.x, y - other.y)
   end
 
+  def +(other)
+    Point.new(x + other.x, y + other.y)
+  end
+
   def dir_from(other)
     return :down if other.x > x
     return :up if other.x < x

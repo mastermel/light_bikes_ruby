@@ -12,8 +12,6 @@ class RaiderLogic < BotLogic
   end
 
   def find_best_move
-    sleep 0.125
-
     if objective == :get_to_the_center
       move = move_to_the_center
       unless move
@@ -43,10 +41,11 @@ class RaiderLogic < BotLogic
     end
 
     # YOLO!
-    move ||= available_moves.sample
+    move ||= safe_moves.sample
 
     # If we haven't found someting yet I guess we're dead! Take the first move
-    move ||= available_moves(true).first
+    move ||= available_moves.first
+    move ||= available_moves(all: true).first
 
     @last_dir = move.dir_from(player.position)
     move
@@ -55,28 +54,64 @@ class RaiderLogic < BotLogic
   def move_to_the_center
     distance_to_center = player.position.distance_to(center_point)
 
-    available_moves
+    safe_moves
       .select {|m| m.distance_to(center_point) < distance_to_center }
-      .sort_by! {|m| (m.dir_from(player.position) == last_dir) ? 1 : 0 }
+      .sort_by {|m| (m.dir_from(player.position) == last_dir) ? 1 : 0 }
       .first
   end
 
   def move_to_oponnent
-    distance_to_opponent = player.position.distance_to(opponent.position)
+		return if next_to_edge
 
-    available_moves
-      .select { |m|
-        d = m.distance_to(opponent.position)
-        d > 2 && d < distance_to_opponent
-      }
-      .sort_by! {|m| (m.dir_from(player.position) == last_dir) ? 1 : 0 }
+    distance_to_opponent = player.position.distance_to(opponent.position).to_i
+    lead_space = [distance_to_opponent, 2].min
+    opponent_bead = opponent.position -
+      Point.new(
+        (opponent.last_diff.x * lead_space),
+        (opponent.last_diff.y * lead_space)
+      )
+    distance_to_bead = player.position.distance_to(opponent_bead)
+
+    safe_moves
+      .select {|m| m.distance_to(opponent_bead) < distance_to_bead }
+      .sort_by {|m| (m.dir_from(player.position) == last_dir) ? 1 : 0 }
       .first
   end
 
   def cut_off_oponnent
+    return if next_to_edge
+
+    safe_moves
+      .sort_by {|m| (m.dir_from(player.position) == last_dir) ? 0 : distance_to_edge(m - player.position) }
+      .first
   end
 
   def move_to_survive
+    moves = safe_moves
+    moves.sort_by! {|m| -area_size_for(m) } if moves.length == 2
+    moves.first
+  end
+
+  def next_to_edge
+    safe_moves(all: true).any? {|m| !all_points[m].nil? && all_points[m] != player.color }
+  end
+
+  def area_size_for(move)
+    area = open_areas.find {|a| a.include?(move) }
+    area.nil? ? 0 : area.length
+  end
+
+  def distance_to_edge(delta)
+    dist = 0
+    test = player.position
+
+    loop do
+      test += delta
+      break unless client.all_points[test].nil?
+      dist += 1
+    end
+
+    dist
   end
 
   def center_point
