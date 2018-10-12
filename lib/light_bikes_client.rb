@@ -19,8 +19,17 @@ class LightBikesClient
     :all_points,
     :opponents,
     :open_areas
+    :difficulty
 
-  def initialize(server_uri:, game_id: nil, player_count: nil, test_game: false, name: 'Flynn', log_prefix: nil)
+  def initialize(
+    server_uri:,
+    game_id: nil,
+    player_count: nil,
+    test_game: false,
+    name: 'Flynn',
+    log_prefix: nil,
+    difficulty: nil
+  )
     self.class.base_uri(server_uri)
 
     @name = name
@@ -28,6 +37,7 @@ class LightBikesClient
     @test_game = test_game
     @log_prefix = log_prefix
     @player_count = player_count
+    @difficulty = difficulty
 
     @opponents = {}
     @all_points = Hash.new(:wall) 
@@ -60,6 +70,7 @@ class LightBikesClient
     params = {}
     params[:addServerBot] = test_game
     params[:numPlayers] = player_count unless player_count.nil?
+    params[:serverBotDifficulty] = difficulty unless difficulty.nil?
     response = post('/games', params)
 
     unless response.success?

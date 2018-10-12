@@ -4,7 +4,7 @@ require 'optparse'
 
 # Class for parsing and containing command line options passed to the bot
 class BotOptions
-  attr_reader :game_id, :name, :test_game, :player_count, :server_uri
+  attr_reader :game_id, :name, :test_game, :player_count, :server_uri, :difficulty
 
   def initialize
     @name = `whoami`.strip
@@ -38,6 +38,10 @@ class BotOptions
 
       opts.on('-nNAME', '--name=NAME', 'The name your bot will be assuming.') do |v|
         @name = v
+      end
+
+      opts.on('-dDIFFICULTY', '--difficulty=DIFFICULTY', 'The difficulty level of the bot to test against. Only used in test mode.') do |v|
+        @difficulty = v
       end
     end.parse!
   end
