@@ -18,7 +18,7 @@ class LightBikesClient
     :test_game,
     :all_points,
     :opponents,
-    :open_areas
+    :open_areas,
     :difficulty
 
   def initialize(
