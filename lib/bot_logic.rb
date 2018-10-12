@@ -8,6 +8,7 @@ class BotLogic
     test_game: false,
     name: 'Flynn',
     log_prefix: nil,
+    difficulty: nil,
     debug: false
   )
     @debug = debug
@@ -18,6 +19,7 @@ class BotLogic
       log_prefix: log_prefix,
       player_count: player_count,
       server_uri: server_uri,
+      difficulty: difficulty
     )
   end
 
